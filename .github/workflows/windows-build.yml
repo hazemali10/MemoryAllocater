@@ -1,0 +1,41 @@
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.0'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_mingw'
+
+      - name: Configure CMake
+        run: cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Find EXE
+        run: dir build /s /b *.exe
+
+      - name: Deploy Qt dependencies
+        run: |
+          mkdir deploy
+          copy build\MemoryAllocater.exe deploy\
+          windeployqt deploy\MemoryAllocater.exe
+
+      - name: Upload EXE folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: MemoryAllocater-Windows
+          path: deploy/
