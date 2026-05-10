@@ -17,13 +17,13 @@ jobs:
           version: '6.8.0'
           host: 'windows'
           target: 'desktop'
-          arch: 'win64_mingw'
+          arch: 'win64_msvc2022_64'
 
       - name: Configure CMake
-        run: cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+        run: cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
-        run: cmake --build build
+        run: cmake --build build --config Release
 
       - name: Find EXE
         run: dir build /s /b *.exe
@@ -31,7 +31,7 @@ jobs:
       - name: Deploy Qt dependencies
         run: |
           mkdir deploy
-          copy build\MemoryAllocater.exe deploy\
+          copy build\Release\MemoryAllocater.exe deploy\
           windeployqt deploy\MemoryAllocater.exe
 
       - name: Upload EXE folder
