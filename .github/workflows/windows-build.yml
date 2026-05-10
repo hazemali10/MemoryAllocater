@@ -26,12 +26,15 @@ jobs:
         run: cmake --build build --config Release
 
       - name: Find EXE
-        run: dir build /s /b *.exe
+        shell: pwsh
+        run: Get-ChildItem -Path build -Filter *.exe -Recurse | Select-Object -ExpandProperty FullName
 
       - name: Deploy Qt dependencies
+        shell: pwsh
         run: |
-          mkdir deploy
-          copy build\Release\MemoryAllocater.exe deploy\
+          New-Item -ItemType Directory -Force -Path deploy
+          $exe = Get-ChildItem -Path build -Filter MemoryAllocater.exe -Recurse | Select-Object -First 1
+          Copy-Item $exe.FullName deploy\
           windeployqt deploy\MemoryAllocater.exe
 
       - name: Upload EXE folder
