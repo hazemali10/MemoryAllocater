@@ -1,4 +1,4 @@
-# MemoryAllocater
+# MemoryAllocator
 
 A modern C++ and Qt-based memory management simulator that demonstrates segmented memory allocation using the **First Fit** and **Best Fit** allocation strategies.
 
